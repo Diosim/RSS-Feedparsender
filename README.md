@@ -15,21 +15,15 @@ This Python script fetches RSS feeds from multiple URLs and prints the title and
 ## Configuration
 
 Create a .env file in the same folder with the script with the structure below:
-
+```yaml
 API_KEY: XXXXX
-
 SECRET_KEY: XXXXX
-
 SENDER_EMAIL: user@mail.com
-
 SENDER_EMAIL_NAME: "sender name"
-
 EMAIL_SUBJECT: "Put your email subject here"
-
 RECEIVER_EMAILS:
   - user1@example.com
   - user2@example.com"
-
 RSS_URLS:
   - feedURL1
   - feedURL2
