@@ -24,3 +24,4 @@ sast:
   stage: test
 include:
 - template: Auto-DevOps.gitlab-ci.yml
+- template: Jobs/Secret-Detection.gitlab-ci.yml
