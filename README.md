@@ -37,7 +37,7 @@ SENDER_EMAIL_NAME: "sender name"
 EMAIL_SUBJECT: "Put your email subject here"
 RECEIVER_EMAILS:
   - user1@example.com
-  - user2@example.com"
+  - user2@example.com
 RSS_URLS:
   - feedURL1
   - feedURL2
