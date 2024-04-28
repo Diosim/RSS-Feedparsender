@@ -6,3 +6,6 @@ venv/
 
 # Ignore logs
 *.log
+
+# Ignore Gitlab CI
+.gitlab-ci.yml
