@@ -5,12 +5,26 @@ This Python script fetches RSS feeds from multiple URLs and prints the title and
 ## Requirements
 
 - Python 3.x
-- `feedparser` library
 
 ## Installation
 
-1. Clone the repository or download the script file.
-2. Install the `feedparser` library using pip:
+Clone the repository or download the script file.
+To run the script, ensure you have the following modules installed:
+
+1. **feedparser**: Used to parse RSS feeds.
+2. **requests**: Used to make HTTP requests for fetching feeds and sending emails.
+3. **pyyaml**: Used to parse YAML configuration files.
+4. **os**: Standard library module for interacting with the operating system.
+5. **logging**: Standard library module for logging messages.
+6. **time**: Standard library module for working with time.
+7. **json**: Standard library module for working with JSON data.
+8. **base64**: Standard library module for encoding and decoding binary data in base64 format.
+
+You can install missing modules using pip, the Python package manager. For example:
+
+```bash
+pip install feedparser requests pyyaml
+```
 
 ## Configuration
 

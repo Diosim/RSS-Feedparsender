@@ -34,7 +34,7 @@ if not os.path.exists('seen_posts.log'):
 else:
     logging.info("seen_posts.log file already exists")  # Log existing file
 
-
+# Extract RSS URLs from environment variables
 rss_urls = env_data["RSS_URLS"]
 
 
