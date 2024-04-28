@@ -89,7 +89,7 @@ def send_email(new_posts):
         'Authorization': f'Basic {encoded_credentials}'
     }
 
-    body = "New notification for MSc Informatics: \n"
+    body = "New RSS feed notification: \n"
     for post in new_posts:
         body += f"{post['title']} - {post['link']}\n"
         if 'description' in post:
