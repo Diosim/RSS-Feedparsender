@@ -32,8 +32,8 @@ Create a .env file in the same folder with the script with the structure below:
 ```yaml
 API_KEY: XXXXX
 SECRET_KEY: XXXXX
-SENDER_EMAIL: user@mail.com
-SENDER_EMAIL_NAME: "sender name"
+SENDER_EMAIL: user@yourmail.com
+SENDER_EMAIL_NAME: "your sender name"
 EMAIL_SUBJECT: "Put your email subject here"
 RECEIVER_EMAILS:
   - user1@example.com
