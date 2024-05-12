@@ -46,25 +46,25 @@ RSS_URLS:
 ## Setting up the script as a service on Linux
 Setup a venv in the folder where script is located
 ```yaml
-source /feedparser/venv/bin/activate
+source /rss-feedfetcher/venv/bin/activate
 pip install feedparser requests pyyaml
 deactivate
 ```
 Create the service, with editor of your choice vim/nano/emacs
 ```yaml
-sudo vim /etc/systemd/system/feedparser.service
+sudo vim /etc/systemd/system/rss-feedfetcher.service
 ```
 
-Change the service folder /feedparser/ to the folder where the script is
+Change the service folder /rss-feedfetcher/ to the folder where the script is
 ```yaml
 [Unit]
-Description=RSS feed parser service
+Description=RSS feed fetcher service
 After=network.target
 
 [Service]
-WorkingDirectory=/feedparser/
-Environment="PATH=/feedparser/venv/bin"
-ExecStart=/feedparser/venv/bin/python /feedparser/feedparser.py
+WorkingDirectory=/rss-feedfetcher/
+Environment="PATH=/rss-feedfetcher/venv/bin"
+ExecStart=/rss-feedfetcher/venv/bin/python /rss-feedfetcher/rss-feedfetcher.py
 
 [Install]
 WantedBy=multi-user.target
@@ -76,15 +76,15 @@ sudo systemctl daemon-reload
 ```
 Enable the service to start on boot (after network is detected as specified in service)
 ```yaml
-sudo systemctl enable feedparser.service
+sudo systemctl enable rss-feedfetcher.service
 ```
 Start the service
 ```yaml
-sudo systemctl start feedparser.service
+sudo systemctl start rss-feedfetcher.service
 ```
 Check status of service
 ```yaml
-sudo systemctl status feedparser.service
+sudo systemctl status rss-feedfetcher.service
 ```
 
 
