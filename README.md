@@ -43,6 +43,52 @@ RSS_URLS:
   - feedURL2
   - feedURL3
 ```
+## Setting up the script as a service on Linux
+Setup a venv in the folder where script is located
+```yaml
+source /feedparser/venv/bin/activate
+pip install feedparser requests pyyaml
+deactivate
+```
+Create the service, with editor of your choice vim/nano/emacs
+```yaml
+sudo vim /etc/systemd/system/feedparser.service
+```
+
+Change the service folder /feedparser/ to the folder where the script is
+```yaml
+[Unit]
+Description=RSS feed parser service
+After=network.target
+
+[Service]
+WorkingDirectory=/feedparser/
+Environment="PATH=/feedparser/venv/bin"
+ExecStart=/feedparser/venv/bin/python /feedparser/feedparser.py
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Reload daemon to see newly created service
+```yaml
+sudo systemctl daemon-reload
+```
+Enable the service to start on boot (after network is detected as specified in service)
+```yaml
+sudo systemctl enable feedparser.service
+```
+Start the service
+```yaml
+sudo systemctl start feedparser.service
+```
+Check status of service
+```yaml
+sudo systemctl status feedparser.service
+```
+
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
