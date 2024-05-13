@@ -12,16 +12,28 @@ from base64 import b64encode
 import logging
 import sys
 import yaml
-import os  # Import the os module
+import os
 #import pdb # For debugging mode
+from bs4 import BeautifulSoup
+import html
+
 
 with open(".env", "r", encoding='utf-8') as f:
     env_data = yaml.safe_load(f)
     
 # Set up logging DEBUG | INFO | WARNING | ERROR | CRITICAL
-logging.basicConfig(filename='script.log', level=logging.INFO)
+logging.basicConfig(filename='script.log', level=logging.ERROR)
 # Log the current working directory
 logging.info(f"Current working directory: {os.getcwd()}")
+
+# BS4 added to handle HTML code in entry descriptions
+def clean_html(html_string):
+    # Unescape HTML entities
+    unescaped = html.unescape(html_string)
+    # Remove HTML tags
+    soup = BeautifulSoup(unescaped, "html.parser")
+    return soup.get_text()
+
 
 # Check if seen_posts.log already exists
 if not os.path.exists('seen_posts.log'):
@@ -93,7 +105,8 @@ def send_email(new_posts):
     for post in new_posts:
         body += f"{post['title']} - {post['link']}\n"
         if 'description' in post:
-            body += f"Description: {post['description']}\n"
+            #body += f"Description: {post['description']}\n"
+            body += f"Description: {clean_html(post['description'])}\n"
         else:
             body += "Description: N/A\n"
         body += "\n"
