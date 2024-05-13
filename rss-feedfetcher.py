@@ -149,10 +149,6 @@ def check_feeds_and_notify():
     logging.info("Completed checking feeds and notifying.")
 
 
-    if new_posts:
-        logging.info(f"Found {len(new_posts)} new posts. Sending email notifications.")
-        send_email(new_posts)
-
 if __name__ == "__main__":
     while True:
         try:
