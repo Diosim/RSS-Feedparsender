@@ -49,7 +49,7 @@ RSS_URLS:
 Setup a venv in the folder where script is located
 ```yaml
 source /rss-feedfetcher/venv/bin/activate
-pip install feedparser requests pyyaml
+pip install feedparser requests pyyaml bs4
 deactivate
 ```
 Create the service, with editor of your choice vim/nano/emacs
