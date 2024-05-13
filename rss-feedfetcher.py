@@ -15,7 +15,7 @@ import yaml
 import os  # Import the os module
 #import pdb # For debugging mode
 
-with open(".env", "r") as f:
+with open(".env", "r", encoding='utf-8') as f:
     env_data = yaml.safe_load(f)
     
 # Set up logging DEBUG | INFO | WARNING | ERROR | CRITICAL
@@ -133,7 +133,7 @@ def check_feeds_and_notify():
             for entry in feed.entries:
                 if is_new_post(entry.id, seen_posts):
                     logging.info(f"Updating with new feeds: {entry.id}")
-                    new_posts.append({'title': entry.title, 'link': entry.link})
+                    new_posts.append({'title': entry.title, 'link': entry.link, 'description': entry.description})
                     update_seen_posts(entry.id)
                     # Enable debugging
                     #pdb.set_trace()
@@ -147,6 +147,7 @@ def check_feeds_and_notify():
             logging.info("No new posts found.")
 
     logging.info("Completed checking feeds and notifying.")
+
 
 
 if __name__ == "__main__":
