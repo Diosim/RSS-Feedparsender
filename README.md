@@ -11,19 +11,21 @@ This Python script fetches RSS feeds from multiple URLs and prints the title and
 Clone the repository or download the script file.
 To run the script, ensure you have the following modules installed:
 
-1. **feedparser**: Used to parse RSS feeds.
-2. **requests**: Used to make HTTP requests for fetching feeds and sending emails.
-3. **pyyaml**: Used to parse YAML configuration files.
-4. **os**: Standard library module for interacting with the operating system.
-5. **logging**: Standard library module for logging messages.
-6. **time**: Standard library module for working with time.
-7. **json**: Standard library module for working with JSON data.
-8. **base64**: Standard library module for encoding and decoding binary data in base64 format.
+01. **feedparser**: Used to parse RSS feeds.
+02. **requests**: Used to make HTTP requests for fetching feeds and sending emails.
+03. **pyyaml**: Used to parse YAML configuration files.
+04. **os**: Standard library module for interacting with the operating system.
+05. **logging**: Standard library module for logging messages.
+06. **time**: Standard library module for working with time.
+07. **json**: Standard library module for working with JSON data.
+08. **base64**: Standard library module for encoding and decoding binary data in base64 format.
+09. **bs4**: A Python library for pulling data out of HTML and XML files. It works with your favorite parser to provide idiomatic ways of navigating, searching, and modifying the parse tree
+10. **html**: A standard library module in Python that provides utilities to manipulate HTML. It includes functions to escape and unescape HTML entities and convert characters to their HTML-safe sequences
 
 You can install missing modules using pip, the Python package manager. For example:
 
 ```bash
-pip install feedparser requests pyyaml
+pip install feedparser requests pyyaml bs4
 ```
 
 ## Configuration
