@@ -92,7 +92,6 @@ sudo systemctl status rss-feedfetcher.service
 
 ## Future additions
 - Add formatting to sent emails
-- Change receivers list to be BCC
 - Add dates to each post when sending emails
 
 ## License
