@@ -110,20 +110,27 @@ def send_email(new_posts):
         else:
             body += "Description: N/A\n"
         body += "\n"
+        
 
-    data = {
-        'Messages': [
-            {
-                "From": {
-                    "Email": sender_email,
-                    "Name": sender_email_name
-                },
-                "To": [{"Email": email} for email in receiver_emails],
-                "Subject": email_subject,
-                "TextPart": body,
-            }
-        ]
-    }
+    for email in receiver_emails:
+        data = {
+            'Messages': [
+                {
+                    "From": {
+                        "Email": sender_email,
+                        "Name": sender_email_name
+                    },
+                    "To": [
+                        {
+                            "Email": email,
+                            "Name": email.split('@')[0]  # Using the local part of the email as the name
+                        }
+                    ],
+                    "Subject": email_subject,
+                    "TextPart": body,
+                }
+            ]
+        }
 
     try:
         response = requests.post(api_url, headers=headers, data=json.dumps(data))
