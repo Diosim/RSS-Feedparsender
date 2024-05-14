@@ -1,6 +1,7 @@
 # RSS Feed Fetcher
 
 This Python script fetches RSS feeds from multiple URLs and prints the title and link of each entry in the feed to the console.
+The method of sending emails is using the mailjet API, for other mail services changes will have to be made to the send_email function.
 
 ## Requirements
 
