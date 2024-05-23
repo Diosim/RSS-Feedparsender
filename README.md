@@ -1,7 +1,6 @@
 # RSS Feed Fetcher
 
-This Python script fetches RSS feeds from multiple URLs and prints the title and link of each entry in the feed to the console.
-The method of sending emails is using the mailjet API, for other mail services changes will have to be made to the send_email function.
+This Python script fetches RSS feeds from multiple URLs and prints the title and link of each entry in the feed to the console. The method of sending emails is using the Mailjet API. For other mail services, changes will have to be made to the `send_email` function.
 
 ## Requirements
 
@@ -9,19 +8,19 @@ The method of sending emails is using the mailjet API, for other mail services c
 
 ## Installation
 
-Clone the repository or download the script file.
-To run the script, ensure you have the following modules installed:
+Clone the repository or download the script file. To run the script, ensure you have the following modules installed:
 
-01. **feedparser**: Used to parse RSS feeds.
-02. **requests**: Used to make HTTP requests for fetching feeds and sending emails.
-03. **pyyaml**: Used to parse YAML configuration files.
-04. **os**: Standard library module for interacting with the operating system.
-05. **logging**: Standard library module for logging messages.
-06. **time**: Standard library module for working with time.
-07. **json**: Standard library module for working with JSON data.
-08. **base64**: Standard library module for encoding and decoding binary data in base64 format.
-09. **bs4**: A Python library for pulling data out of HTML and XML files. It works with your favorite parser to provide idiomatic ways of navigating, searching, and modifying the parse tree.
+1. **feedparser**: Used to parse RSS feeds.
+2. **requests**: Used to make HTTP requests for fetching feeds and sending emails.
+3. **pyyaml**: Used to parse YAML configuration files.
+4. **os**: Standard library module for interacting with the operating system.
+5. **logging**: Standard library module for logging messages.
+6. **time**: Standard library module for working with time.
+7. **json**: Standard library module for working with JSON data.
+8. **base64**: Standard library module for encoding and decoding binary data in base64 format.
+9. **bs4**: A Python library for pulling data out of HTML and XML files. It works with your favorite parser to provide idiomatic ways of navigating, searching, and modifying the parse tree.
 10. **html**: A standard library module in Python that provides utilities to manipulate HTML. It includes functions to escape and unescape HTML entities and convert characters to their HTML-safe sequences.
+11. **datetime**: Standard library module for manipulating dates and times.
 
 You can install missing modules using pip, the Python package manager. For example:
 
@@ -31,7 +30,7 @@ pip install feedparser requests pyyaml bs4
 
 ## Configuration
 
-Create a .env file in the same folder with the script with the structure below:
+Create a .env file in the same folder as the script with the structure below:
 ```yaml
 API_KEY: XXXXX
 SECRET_KEY: XXXXX
@@ -46,6 +45,8 @@ RSS_URLS:
   - feedURL2
   - feedURL3
 ```
+
+
 ## Setting up the script as a service on Linux
 Setup a venv in the folder where script is located
 ```yaml
@@ -91,8 +92,7 @@ sudo systemctl status rss-feedfetcher.service
 ```
 
 ## Future additions
-- Add formatting to sent emails
-- Add dates to each post when sending emails
+- debugging
 
 ## License
 
