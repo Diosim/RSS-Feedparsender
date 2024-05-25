@@ -11,21 +11,31 @@ from bs4 import BeautifulSoup
 import html
 from datetime import datetime
 
-# Load environment variables
-with open(".env", "r", encoding='utf-8') as f:
-    env_data = yaml.safe_load(f)
-
 # Set up logging INFO | ERROR | WARNING
 logging.basicConfig(filename='script.log', level=logging.ERROR)
 logging.info(f"Current working directory: {os.getcwd()}")
 
-# Function to clean HTML
+
+if os.path.isfile(".env"):
+    with open(".env", "r", encoding='utf-8') as f:
+        env_data = yaml.safe_load(f)
+else:
+    logging.error(".env not found")
+    print(".env not found")
+    
+# Function to clean HTML from RSS feeds
 def clean_html(html_string):
     unescaped = html.unescape(html_string)
     soup = BeautifulSoup(unescaped, "html.parser")
     return soup.get_text()
 
-# Function to load HTML template
+if not os.path.exists('seen_posts.log'):
+    try:
+        with open('seen_posts.log', 'a') as file:
+            logging.info("Created seen_posts.log file successfully")
+    except Exception as e:
+        logging.error(f"Error creating seen_posts.log file: {e}")
+
 def load_html_template(template_path):
     with open(template_path, 'r', encoding='utf-8') as file:
         return file.read()
@@ -34,7 +44,17 @@ def load_html_template(template_path):
 def fill_html_template(template, date, posts):
     return template.replace('{{date}}', date).replace('{{posts}}', posts)
 
-# Load seen posts
+def fetch_feed(url):
+    try:
+        logging.info(f"Fetching RSS feed from {url}")
+        return feedparser.parse(url)
+    except Exception as e:
+        logging.error(f"Error fetching RSS feed from {url}: {e}")
+        return None
+
+def is_new_post(post_id, seen_posts):
+    return post_id not in seen_posts
+
 def load_seen_posts():
     try:
         with open('seen_posts.log', 'r') as file:
@@ -54,20 +74,6 @@ def update_seen_posts(post_id):
     except Exception as e:
         logging.error(f"Error updating seen_posts.log: {e}")
 
-# Fetch RSS feed
-def fetch_feed(url):
-    try:
-        logging.info(f"Fetching RSS feed from {url}")
-        return feedparser.parse(url)
-    except Exception as e:
-        logging.error(f"Error fetching RSS feed from {url}: {e}")
-        return None
-
-# Check if post is new
-def is_new_post(post_id, seen_posts):
-    return post_id not in seen_posts
-
-# Send email
 def send_email(new_posts):
     api_key = env_data["API_KEY"]
     api_secret = env_data["SECRET_KEY"]
@@ -121,7 +127,6 @@ def send_email(new_posts):
         except Exception as e:
             logging.error(f"Failed to send email: {e}")
 
-# Check feeds and notify
 def check_feeds_and_notify():
     seen_posts = load_seen_posts()
     new_posts = []
@@ -149,7 +154,6 @@ def check_feeds_and_notify():
 
     logging.info("Completed checking feeds and notifying.")
 
-# Main loop
 if __name__ == "__main__":
     while True:
         try:
