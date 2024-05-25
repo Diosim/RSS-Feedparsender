@@ -1,9 +1,3 @@
-# Steps to do for this to work
-# 1. Create free mailjet account (limit of 200 emails per day) https://www.mailjet.com/
-# 2. Buy a domain https://www.cloudflare.com/ ~10usd per year
-# 3. Add TXT DNS records to Cloudflare account for SPF and DKIM
-
-
 import feedparser
 import requests
 import time
@@ -13,54 +7,34 @@ import logging
 import sys
 import yaml
 import os
-#import pdb # For debugging mode
 from bs4 import BeautifulSoup
 import html
+from datetime import datetime
 
-
+# Load environment variables
 with open(".env", "r", encoding='utf-8') as f:
     env_data = yaml.safe_load(f)
-    
-# Set up logging DEBUG | INFO | WARNING | ERROR | CRITICAL
+
+# Set up logging INFO | ERROR | WARNING
 logging.basicConfig(filename='script.log', level=logging.ERROR)
-# Log the current working directory
 logging.info(f"Current working directory: {os.getcwd()}")
 
-# BS4 added to handle HTML code in entry descriptions
+# Function to clean HTML
 def clean_html(html_string):
-    # Unescape HTML entities
     unescaped = html.unescape(html_string)
-    # Remove HTML tags
     soup = BeautifulSoup(unescaped, "html.parser")
     return soup.get_text()
 
+# Function to load HTML template
+def load_html_template(template_path):
+    with open(template_path, 'r', encoding='utf-8') as file:
+        return file.read()
 
-# Check if seen_posts.log already exists
-if not os.path.exists('seen_posts.log'):
-    try:
-        # If it doesn't exist, create it
-        with open('seen_posts.log', 'a') as file:
-            logging.info("Created seen_posts.log file successfully")  # Log success
-    except Exception as e:
-        logging.error(f"Error creating seen_posts.log file: {e}")  # Log error
-else:
-    logging.info("seen_posts.log file already exists")  # Log existing file
+# Function to replace placeholders in the template
+def fill_html_template(template, date, posts):
+    return template.replace('{{date}}', date).replace('{{posts}}', posts)
 
-# Extract RSS URLs from environment variables
-rss_urls = env_data["RSS_URLS"]
-
-
-def fetch_feed(url):
-    try:
-        logging.info(f"Fetching RSS feed from {url}")
-        return feedparser.parse(url)
-    except Exception as e:
-        logging.error(f"Error fetching RSS feed from {url}: {e}")
-        return None
-
-def is_new_post(post_id, seen_posts):
-    return post_id not in seen_posts
-
+# Load seen posts
 def load_seen_posts():
     try:
         with open('seen_posts.log', 'r') as file:
@@ -69,12 +43,10 @@ def load_seen_posts():
         logging.error("seen_posts.log file not found.")
         return []
 
-    
+# Update seen posts
 def update_seen_posts(post_id):
     try:
-        # Load existing seen posts
         seen_posts = load_seen_posts()
-        # Check if the post ID is already in the seen posts
         if post_id not in seen_posts:
             with open('seen_posts.log', 'a') as file:
                 logging.info(f"Writting RSS feed from {post_id}")
@@ -82,8 +54,20 @@ def update_seen_posts(post_id):
     except Exception as e:
         logging.error(f"Error updating seen_posts.log: {e}")
 
+# Fetch RSS feed
+def fetch_feed(url):
+    try:
+        logging.info(f"Fetching RSS feed from {url}")
+        return feedparser.parse(url)
+    except Exception as e:
+        logging.error(f"Error fetching RSS feed from {url}: {e}")
+        return None
 
+# Check if post is new
+def is_new_post(post_id, seen_posts):
+    return post_id not in seen_posts
 
+# Send email
 def send_email(new_posts):
     api_key = env_data["API_KEY"]
     api_secret = env_data["SECRET_KEY"]
@@ -91,9 +75,9 @@ def send_email(new_posts):
     receiver_emails = env_data["RECEIVER_EMAILS"]
     sender_email_name = env_data["SENDER_EMAIL_NAME"]
     email_subject = env_data["EMAIL_SUBJECT"]
+    template_path = 'email_template.html'
 
     api_url = "https://api.mailjet.com/v3.1/send"
-
     encoded_credentials = b64encode(f"{api_key}:{api_secret}".encode('utf-8')).decode('utf-8')
 
     headers = {
@@ -101,16 +85,14 @@ def send_email(new_posts):
         'Authorization': f'Basic {encoded_credentials}'
     }
 
-    body = "New RSS feed notification: \n"
+    template = load_html_template(template_path)
+    date = datetime.now().strftime('%d-%m-%Y')
+    posts_content = ""
+
     for post in new_posts:
-        body += f"{post['title']} - {post['link']}\n"
-        if 'description' in post:
-            #body += f"Description: {post['description']}\n"
-            body += f"Description: {clean_html(post['description'])}\n"
-        else:
-            body += "Description: N/A\n"
-        body += "\n"
-        
+        posts_content += f"<p><a href='{post['link']}'>{post['title']}</a><br>{clean_html(post['description'])}</p>"
+
+    body = fill_html_template(template, date, posts_content)
 
     for email in receiver_emails:
         data = {
@@ -123,40 +105,39 @@ def send_email(new_posts):
                     "To": [
                         {
                             "Email": email,
-                            "Name": email.split('@')[0]  # Using the local part of the email as the name
+                            "Name": email.split('@')[0]
                         }
                     ],
                     "Subject": email_subject,
-                    "TextPart": body,
+                    "HTMLPart": body,
                 }
             ]
         }
 
-    try:
-        response = requests.post(api_url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        logging.info("Email sent successfully!")
-    except Exception as e:
-        logging.error(f"Failed to send email: {e}")
+        try:
+            response = requests.post(api_url, headers=headers, data=json.dumps(data))
+            response.raise_for_status()
+            logging.info("Email sent successfully!")
+        except Exception as e:
+            logging.error(f"Failed to send email: {e}")
 
+# Check feeds and notify
 def check_feeds_and_notify():
     seen_posts = load_seen_posts()
     new_posts = []
 
     try:
-        for url in rss_urls:
+        for url in env_data["RSS_URLS"]:
             feed = fetch_feed(url)
             if feed is None:
                 logging.warning(f"Failed to fetch feed from {url}. Skipping to the next feed.")
-                continue  # Skip to the next feed if fetching failed
+                continue
 
             for entry in feed.entries:
                 if is_new_post(entry.id, seen_posts):
                     logging.info(f"Updating with new feeds: {entry.id}")
                     new_posts.append({'title': entry.title, 'link': entry.link, 'description': entry.description})
                     update_seen_posts(entry.id)
-                    # Enable debugging
-                    #pdb.set_trace()
     except Exception as e:
         logging.error(f"Error checking feeds and notifying: {e}")
     else:
@@ -168,15 +149,13 @@ def check_feeds_and_notify():
 
     logging.info("Completed checking feeds and notifying.")
 
-
-
+# Main loop
 if __name__ == "__main__":
     while True:
         try:
             check_feeds_and_notify()
             print("Waiting for the next check...", file=sys.stderr)
-            #print("Waiting for the next check...")
-            time.sleep(300)  # Check every 5 minutes
+            time.sleep(300)
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
-            break  # Exit the loop if an unexpected error occurs
+            break
