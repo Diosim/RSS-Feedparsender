@@ -15,7 +15,6 @@ from datetime import datetime
 logging.basicConfig(filename='script.log', level=logging.ERROR)
 logging.info(f"Current working directory: {os.getcwd()}")
 
-
 if os.path.isfile(".env"):
     with open(".env", "r", encoding='utf-8') as f:
         env_data = yaml.safe_load(f)
@@ -80,7 +79,6 @@ def send_email(new_posts):
     sender_email_name = env_data["SENDER_EMAIL_NAME"]
     email_subject = env_data["EMAIL_SUBJECT"]
     template_path = 'email_template.html'
-    template_path = 'email_template.html'
 
     api_url = "https://api.mailjet.com/v3.1/send"
     encoded_credentials = b64encode(f"{api_key}:{api_secret}".encode('utf-8')).decode('utf-8')
@@ -91,17 +89,10 @@ def send_email(new_posts):
     }
 
     template = load_html_template(template_path)
-    date = datetime.now().strftime('%d-%m-%Y')
-    posts_content = ""
-
-    template = load_html_template(template_path)
-    date = datetime.now().strftime('%d-%m-%Y')
+    date = datetime.now().strftime('%Y-%m-%d')
     posts_content = ""
 
     for post in new_posts:
-        posts_content += f"<p><a href='{post['link']}'>{post['title']}</a><br>{clean_html(post['description'])}</p>"
-
-    body = fill_html_template(template, date, posts_content)
         posts_content += f"<p><a href='{post['link']}'>{post['title']}</a><br>{clean_html(post['description'])}</p>"
 
     body = fill_html_template(template, date, posts_content)
@@ -118,11 +109,9 @@ def send_email(new_posts):
                         {
                             "Email": email,
                             "Name": email.split('@')[0]
-                            "Name": email.split('@')[0]
                         }
                     ],
                     "Subject": email_subject,
-                    "HTMLPart": body,
                     "HTMLPart": body,
                 }
             ]
@@ -134,12 +123,7 @@ def send_email(new_posts):
             logging.info("Email sent successfully!")
         except Exception as e:
             logging.error(f"Failed to send email: {e}")
-        try:
-            response = requests.post(api_url, headers=headers, data=json.dumps(data))
-            response.raise_for_status()
-            logging.info("Email sent successfully!")
-        except Exception as e:
-            logging.error(f"Failed to send email: {e}")
+
 
 # Check feeds and notify
 def check_feeds_and_notify():
@@ -148,11 +132,9 @@ def check_feeds_and_notify():
 
     try:
         for url in env_data["RSS_URLS"]:
-        for url in env_data["RSS_URLS"]:
             feed = fetch_feed(url)
             if feed is None:
                 logging.warning(f"Failed to fetch feed from {url}. Skipping to the next feed.")
-                continue
                 continue
 
             for entry in feed.entries:
@@ -177,8 +159,6 @@ if __name__ == "__main__":
             check_feeds_and_notify()
             print("Waiting for the next check...", file=sys.stderr)
             time.sleep(300)
-            time.sleep(300)
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
-            break
             break
