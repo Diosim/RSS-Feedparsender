@@ -40,7 +40,6 @@ def load_html_template(template_path):
     with open(template_path, 'r', encoding='utf-8') as file:
         return file.read()
 
-# Function to replace placeholders in the template
 def fill_html_template(template, date, posts):
     return template.replace('{{date}}', date).replace('{{posts}}', posts)
 
@@ -63,7 +62,6 @@ def load_seen_posts():
         logging.error("seen_posts.log file not found.")
         return []
 
-# Update seen posts
 def update_seen_posts(post_id):
     try:
         seen_posts = load_seen_posts()
