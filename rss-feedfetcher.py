@@ -124,8 +124,6 @@ def send_email(new_posts):
         except Exception as e:
             logging.error(f"Failed to send email: {e}")
 
-
-# Check feeds and notify
 def check_feeds_and_notify():
     seen_posts = load_seen_posts()
     new_posts = []
