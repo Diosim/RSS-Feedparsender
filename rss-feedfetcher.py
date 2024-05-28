@@ -89,7 +89,7 @@ def send_email(new_posts):
     }
 
     template = load_html_template(template_path)
-    date = datetime.now().strftime('%Y-%m-%d')
+    date = datetime.now().strftime('%d-%m-%Y')
     posts_content = ""
 
     for post in new_posts:
